@@ -1486,3 +1486,24 @@ export function getEmailInterval(isEmailEnabled) {
 
     return emailInterval;
 }
+
+/**
+ * Returns a query string with the given param and value removed.
+ * @param {string} query - A query string from a URL (ex. '?num_tries=4&source=web&q=asdf')
+ * @param {string} param - A query param name (ex. 'source')
+ * @param {string} [value] - A query param value (ex. 'web')
+ * @param {string} [substitution] - A value to substitute in place of the param/value pair (ex. 'source=mobile&')
+ * @returns {string} A query string (ex. '?num_tries=4&q=asdf')
+ */
+export function querySubParamValue(query, param, value = null, substitution = '') {
+    const reStr = value ? '(' + param + '=' + value + ')[&]?' : '(' + param + '=)[^&]*[&]?' ;
+    const re = new RegExp(reStr, 'i');
+    if (query.match(re)) {
+        const newQuery = query.replace(re, substitution);
+        if (newQuery[newQuery.length - 1] === '&') {
+            return newQuery.substring(0, newQuery.length - 1);
+        }
+        return newQuery;
+    }
+    return null;
+}
